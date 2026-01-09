@@ -1,7 +1,6 @@
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
-from starlette.responses import Response
-
+from starlette.responses import Response, JSONResponse
 
 __all__ = ("AppVersionCheckingMiddleware",)
 
@@ -30,10 +29,24 @@ class AppVersionCheckingMiddleware(BaseHTTPMiddleware):
         if from_frontend:
             if request.headers.get("x-android-app-version", None) is not None and self.app_android_minimal_version is not None:
                 if tuple([int(x) for x in str(request.headers["x-android-app-version"]).split(".")]) < tuple([int(x) for x in self.app_android_minimal_version.split(".")]):
-                    return Response(status_code=426, content="upgrade_required")
+                    return JSONResponse(
+                        status_code=426,
+                        content={
+                            "error": "upgrade_required",
+                            "message": "App update required",
+                            "min_version": self.app_android_minimal_version
+                        }
+                    )
             elif request.headers.get("x-ios-app-version", None) is not None and self.app_ios_minimal_version is not None:
                 if tuple([int(x) for x in str(request.headers["x-ios-app-version"]).split(".")]) < tuple([int(x) for x in self.app_ios_minimal_version.split(".")]):
-                    return Response(status_code=426, content="upgrade_required")
+                    return JSONResponse(
+                        status_code=426,
+                        content={
+                            "error": "upgrade_required",
+                            "message": "App update required",
+                            "min_version": self.app_ios_minimal_version
+                        }
+                    )
         response = await call_next(request)
         if from_frontend:
             if request.headers.get("x-android-app-version", None) is not None and self.app_android_current_version is not None:

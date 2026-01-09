@@ -1,0 +1,19 @@
+[build-system]
+requires = ["hatchling >= 1.26"]
+build-backend = "hatchling.build"
+[project]
+name = "lib-utils"
+version = "0.0.1"
+license = "MIT"
+description = "A package with some shared logic for our microservices"
+authors = [
+    { name = "Nick Grigorev", email = "nikolai.grigorev@ypa.finance" },
+]
+classifiers = [
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "starlette==0.46.1"
+]
